@@ -31,14 +31,9 @@ router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body
         const findUser = await User.findOne({ email })
-        if (!findUser) {
-            throw new Unauthorized()
-        }
+        if (!findUser) throw new Unauthorized()
 
-        if (!bcrypt.compareSync(password, findUser.password)) {
-            throw new Unauthorized()
-            
-        }
+        if (!bcrypt.compareSync(password, findUser.password)) throw new Unauthorized()
 
         const payload = { user: {
             _id: findUser._id,
