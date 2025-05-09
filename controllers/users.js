@@ -3,6 +3,7 @@ import User from '../models/user.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { Unauthorized, UnprocessableEntity } from '../lib/errors.js'
+import errorHandler from "../middleware/errorHandler.js";
 
 const router = express.Router()
 
@@ -10,7 +11,7 @@ const router = express.Router()
 router.post('/register', async (req, res) => {
     try {
         // const { password, passwordConfirmation } = req.body
-        
+
         if (req.body.password !== req.body.passwordConfirmation) {
             throw new UnprocessableEntity('Passwords do not match', 'password')
         }
@@ -20,7 +21,7 @@ router.post('/register', async (req, res) => {
         
         return res.status(201).json({ message: `Welcome ${user.username}` })
     } catch (error) {
-        console.log(error);
+        errorHandler(error, res)
         
     }
 })
@@ -39,7 +40,6 @@ router.post('/login', async (req, res) => {
             
         }
 
-
         const payload = { user: {
             _id: findUser._id,
             username: findUser.username
@@ -47,9 +47,8 @@ router.post('/login', async (req, res) => {
         const token = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '7d' })
 
         return res.status(200).json({ token })
-
     } catch (error) {
-        console.log(error);
+        errorHandler(error, res)
         
     }
 })
