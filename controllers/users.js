@@ -10,8 +10,6 @@ const router = express.Router()
 
 router.post('/register', async (req, res) => {
     try {
-        // const { password, passwordConfirmation } = req.body
-
         if (req.body.password !== req.body.passwordConfirmation) {
             throw new UnprocessableEntity('Passwords do not match', 'password')
         }
